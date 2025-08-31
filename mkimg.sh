@@ -20,26 +20,32 @@ else
     cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/Image BOOT/
 	cp ../common/resizing/prebuilt/Image-resizing BOOT/
 	cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/dts/rockchip/rk3326-$DEVICE.dtb BOOT/rk3326-r50s-android.dtb
-    cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/dts/rockchip/rk3326-$DEVICE.dtb BOOT/rk3326-rg351p.dtb
+
 	echo "Creating image file $IMGNAME..."
 	dd if=/dev/zero of=$IMGNAME bs=1M count=$(echo "$IMGSIZE*1024" | bc)
 	sync
 	echo "Creating partitions..."
-	# Make the disk MBR type (msdos)
-	parted $IMGNAME mktable msdos
+	# Make the disk GPT
+	parted -s $IMGNAME mktable gpt
 
-	# Copy u-boot data (skip the first sector because it is MBR data)
-	sudo dd if=bootloader/idbloader.img of=$IMGNAME conv=fsync bs=512 seek=64
-	sudo dd if=bootloader/uboot.img of=$IMGNAME conv=fsync bs=512 seek=16384
-	sudo dd if=bootloader/trust.img of=$IMGNAME conv=fsync bs=512 seek=24576
+	## Create the bootloader partitions and fuse them
 
-	# Making BOOT partitions (size 1081344 sector - 32768 sector = 1048576  sectors * 512 = 512MiB)
-	parted -s $IMGNAME mkpart primary fat32 32768s 1081343s
+	# Making BOOT partitions (size 1081344 sector - 32768 sector = 1048576  sectors * 512 = 512MiB), put it as 1st partition
+	# otherwise it will not find the boot files (uboot skill issue?)
+	parted -s $IMGNAME mkpart BOOT fat32 32768s 1081343s
     # Set boot flag
-    parted -s $IMGNAME set 1 boot on
+    #parted -s $IMGNAME set 1 boot on
+
 	# Making rootfs partitions (size 1Gi)
-	parted -s $IMGNAME mkpart primary ext4 1081344s 5701008s
-	parted -s $IMGNAME mkpart primary ext4 5701009s 100%
+	parted -s $IMGNAME mkpart system ext4 1081344s 5701008s
+
+	# create bootloader partitions at last ( even though they're at the start)
+	parted -s $IMGNAME mkpart idbloader 64s 16383s
+	parted -s $IMGNAME mkpart uboot 16384s 24575s
+	parted -s $IMGNAME mkpart trust 24576s 32767s
+	sudo dd if=bootloader/idbloader.img of=$IMGNAME conv=fsync,notrunc bs=512 seek=64
+	sudo dd if=bootloader/uboot.img of=$IMGNAME conv=fsync,notrunc bs=512 seek=16384
+	sudo dd if=bootloader/trust.img of=$IMGNAME conv=fsync,notrunc bs=512 seek=24576
 	# Verify
 	parted $IMGNAME print
 	sync
@@ -54,7 +60,7 @@ else
 	sleep 5
 	mkfs.fat -F 32 /dev/mapper/${LOOPDEV}p1 -n BOOT
 	mkfs.ext4 /dev/mapper/${LOOPDEV}p2 -L system
-	mkfs.ext4 /dev/mapper/${LOOPDEV}p3 -L userdata
+
 	echo "Copying system..."
 	dd if=$OUTDIR/system.img of=/dev/mapper/${LOOPDEV}p2 bs=1M
 	echo "Copying BOOT..."
@@ -72,8 +78,5 @@ else
     echo "Cleanup..."
     rm BOOT/Image*
     rm BOOT/rk3326-*.dtb
-	parted -s $IMGNAME mkpart primary ext2 0% 32767s
-	parted -s $IMGNAME set 4 hidden on
-	parted -s $IMGNAME rm 3
 	zip -r $IMGNAME.zip $IMGNAME
 fi
