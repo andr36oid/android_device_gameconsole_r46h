@@ -19,6 +19,7 @@ else
     echo "Copying over kernel files"
     cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/Image BOOT/
 	cp ../common/resizing/prebuilt/Image-resizing BOOT/
+	cp ../common/resizing/prebuilt/Image-recovery BOOT/
 	cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/dts/rockchip/rk3326-$DEVICE.dtb BOOT/rk3326-r50s-android.dtb
 
 	echo "Creating image file $IMGNAME..."
