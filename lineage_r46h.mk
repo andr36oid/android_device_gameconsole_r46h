@@ -19,25 +19,25 @@ include device/gameconsole/common/BoardConfig.mk
 $(call inherit-product, device/gameconsole/common/device.mk)
 
 # Inherit from device-specific part of the product configuration
-$(call inherit-product, device/gameconsole/r50s/device.mk)
+$(call inherit-product, device/gameconsole/r46h/device.mk)
 
 # Boot animation
-TARGET_SCREEN_HEIGHT := 854
-TARGET_SCREEN_WIDTH := 480
+TARGET_SCREEN_HEIGHT := 768
+TARGET_SCREEN_WIDTH := 1024
 
-PRODUCT_NAME := lineage_r50s
-PRODUCT_DEVICE := r50s
+PRODUCT_NAME := lineage_r46h
+PRODUCT_DEVICE := r46h
 PRODUCT_MANUFACTURER := GameConsole
 PRODUCT_BRAND := GameConsole
-PRODUCT_MODEL := LineageOS on GameConsole R50S
+PRODUCT_MODEL := GameConsole R46H
 
 
 PRODUCT_GMS_CLIENTID_BASE := android-rockchip
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-	TARGET_DEVICE="r50s" \
-	PRODUCT_NAME="r50s" \
-	PRIVATE_BUILD_DESC="lineage_r50s-userdebug 11 RP1A.201005.004 test-keys"
+	TARGET_DEVICE="r46h" \
+	PRODUCT_NAME="r46h" \
+	PRIVATE_BUILD_DESC="lineage_r46h-userdebug 11 RP1A.201005.004 test-keys"
 
 # Set BUILD_FINGERPRINT variable to be picked up by both system and vendor build.prop
 BUILD_FINGERPRINT := google/ryu/dragon:8.1.0/OPM1.171019.016/4503492:user/release-keys

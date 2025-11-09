@@ -15,9 +15,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/lineage_r50s.mk
+	$(LOCAL_DIR)/lineage_r46h.mk
 
 COMMON_LUNCH_CHOICES := \
-	lineage_r50s-user \
-	lineage_r50s-userdebug \
-	lineage_r50s-eng
+	lineage_r46h-user \
+	lineage_r46h-userdebug \
+	lineage_r46h-eng

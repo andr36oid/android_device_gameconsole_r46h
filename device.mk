@@ -22,7 +22,9 @@
 #
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    ro.surface_flinger.primary_display_orientation=ORIENTATION_270 \
+    ro.surface_flinger.primary_display_orientation=ORIENTATION_0 \
+    ro.sf.lcd_density=304
 
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 # Device specific overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay

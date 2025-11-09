@@ -3,10 +3,10 @@
 LINEAGEVERSION=lineage-18.1
 DATE=`date -u +%Y%m%d`
 TIME=`date -u +%H%M`
-DEVICE=r50s-android
+DEVICE=r46h-android
 IMGNAME=$LINEAGEVERSION-$DATE-$TIME-$DEVICE.img
 IMGSIZE=3
-OUTDIR=${ANDROID_PRODUCT_OUT:="../../../out/target/product/r50s"}
+OUTDIR=${ANDROID_PRODUCT_OUT:="../../../out/target/product/r46h"}
 
 if [ `id -u` != 0 ]; then
 	echo "Must be root to run script!"
@@ -20,7 +20,7 @@ else
     cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/Image BOOT/
 	cp ../common/resizing/prebuilt/Image-resizing BOOT/
 	cp ../common/resizing/prebuilt/Image-recovery BOOT/
-	cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/dts/rockchip/rk3326-$DEVICE.dtb BOOT/rk3326-r50s-android.dtb
+	cp $OUTDIR/obj/KERNEL_OBJ/arch/arm64/boot/dts/rockchip/rk3326-$DEVICE.dtb BOOT/rk3326-r46h-android.dtb
 
 	echo "Creating image file $IMGNAME..."
 	dd if=/dev/zero of=$IMGNAME bs=1M count=$(echo "$IMGSIZE*1024" | bc)
